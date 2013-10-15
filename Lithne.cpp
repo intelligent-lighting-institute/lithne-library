@@ -24,8 +24,6 @@
 #include "LithneDefinitions.h"
 */
 
-#define MAX_NODES 10
-
 #if defined(ARDUINO) && ARDUINO >= 100
 	#define ARDUINO1DOT0 true
 #else
@@ -1293,7 +1291,6 @@ xbee.readPacket();
 
 if (xbee.getResponse().isAvailable()) //Returns a reference to the current response Note: once readPacket is called again this response will be overwritten!
 {
-	// Serial.println(" XBee Pack available " );
 	int responseType	=	xbee.getResponse().getApiId();
 	
   	if (responseType == ZB_RX_RESPONSE)
