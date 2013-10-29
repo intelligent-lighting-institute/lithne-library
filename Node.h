@@ -27,9 +27,11 @@ class Node
 			uint16_t = UNKNOWN_16B );
 	~Node();
 
-	void setID( uint8_t _id );
-	void setAddress64( XBeeAddress64 _add64 );
-	void setAddress16( uint16_t _add16 );
+	uint8_t setID( uint8_t _id );
+	void setAddress64( XBeeAddress64 _add64 );	//deprecated
+	XBeeAddress64 setXBeeAddress64( XBeeAddress64 _addr64 );
+	void setAddress16( uint16_t _add16 );		//deprecated
+	uint16_t setXBeeAddress16( uint16_t _addr16 );
 	void addDBMeasurement( uint16_t _id );
 	void openDBRequest();
 	void closeDBRequest();

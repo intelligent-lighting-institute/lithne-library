@@ -62,21 +62,29 @@ __   _____ ___ ___
 */
 
 /** Set the identifier for the node **/
-void Node::setID( uint8_t _id )
+uint8_t Node::setID( uint8_t _id )
 {	
-	nodeId	=	_id;
+	return nodeId	=	_id;
 }
 
 /** Set the 64-bit address for this node **/
+XBeeAddress64 Node::setXBeeAddress64( XBeeAddress64 _addr64 )
+{
+	return nodeAddress64		=	_addr64;
+}
 void Node::setAddress64( XBeeAddress64 _addr64 )
 {
-	nodeAddress64		=	_addr64;
+	setAddress64( _addr64 );
 }
 
 /** Set the 16-bit address for this node **/
-void Node::setAddress16( uint16_t _add16 )
+uint16_t Node::setXBeeAddress16( uint16_t _addr16 )
 {
-	nodeAddress16	=	_add16;
+	return nodeAddress16	=	_addr16;
+}
+void Node::setAddress16( uint16_t _addr16 )
+{
+	setXBeeAddress16( _addr16 );
 }
 
 /** Add a new DB Measurement **/
