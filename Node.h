@@ -28,23 +28,31 @@ class Node
 	~Node();
 
 	uint8_t setID( uint8_t _id );
-	void setAddress64( XBeeAddress64 _add64 );	//deprecated
+
 	XBeeAddress64 setXBeeAddress64( XBeeAddress64 _addr64 );
-	void setAddress16( uint16_t _add16 );		//deprecated
+	XBeeAddress64 	getXBeeAddress64();
+	XBeeAddress64 	getAddress64();				//deprecated
+	void setAddress64( XBeeAddress64 _add64 );	//deprecated
+
 	uint16_t setXBeeAddress16( uint16_t _addr16 );
+	uint16_t getXBeeAddress16();
+	uint16_t getAddress16();					//deprecated
+	void setAddress16( uint16_t _add16 );		//deprecated
+	
+
 	void addDBMeasurement( uint16_t _id );
 	void openDBRequest();
 	void closeDBRequest();
 
 	bool isNewMeasurement();
-	bool hasAddress16();
+	bool hasXBeeAddress16();
 
 	uint8_t			getID();
 	uint16_t		getDB();
-	uint16_t		getAddress16();
+	
 	uint32_t		getMSB();
 	uint32_t		getLSB();
-	XBeeAddress64 	getAddress64();
+
 
   private:
 	bool 		openRequest;
