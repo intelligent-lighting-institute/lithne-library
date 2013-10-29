@@ -79,9 +79,13 @@ class LithneClass
 	void init( uint32_t _baud = 115200, HardwareSerial & port = Serial );
 	void begin( uint32_t _baud = 115200, HardwareSerial & port = Serial );
 	void setSerial(HardwareSerial &_port );
-	void setRecipient( uint8_t _i );
-	void setRecipient( XBeeAddress64 _add64 );
-	void setRecipient16( uint16_t _add16 );
+	void setRecipient( uint8_t _id );
+	void toID( uint8_t _id );
+	XBeeAddress64 toXBeeAddress( XBeeAddress64 _addr64 );
+	void setRecipient( XBeeAddress64 _add64 );	//deprecated
+	uint16_t toXBeeAddress( uint16_t _addr16 );
+	void setRecipient16( uint16_t _add16 );		//deprecated
+
 	void setFunction( uint16_t _function );
 	void setFunction( String _function );
 	void addArgument( uint16_t _arg );
@@ -119,6 +123,8 @@ class LithneClass
 	bool hasScope( uint16_t _scope );
 	bool removeScope( uint16_t _scope );
 	bool removeScope( String _group );
+	bool equals( XBeeAddress64 _addr1, XBeeAddress64 _addr2 );
+	bool isFromNodeID( uint8_t _id );
 	
 	/*	Functions that return bytes (8-bit integers)	*/
 	

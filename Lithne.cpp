@@ -124,8 +124,7 @@ LithneClass::~LithneClass()
 /** Specify the baud rate at which to communicate to the XBee **/
 void LithneClass::init( uint32_t _baud, HardwareSerial &_port )
 {
-	xbee.setSerial( _port );
-	xbee.begin( _baud );
+	begin( _baud, _port );
 }
 
 /** Specify the baud rate at which to communicate to the XBee **/
@@ -161,6 +160,10 @@ void LithneClass::setFunction( uint16_t _function )
 **/
 void LithneClass::setRecipient( uint8_t _id )
 {
+	toID( _id );
+}
+void LithneClass::toID( uint8_t _id )
+{
 	/*	Retrieve the node the user refers to	*/
 	Node * receivingNode	=	getNodeByID( _id );
 	/*	From this node, get the 16-bit and 64-bit address and
@@ -173,18 +176,28 @@ void LithneClass::setRecipient( uint8_t _id )
 	}
 }
 /** Set the address of the receiving XBee by using the full 64 bit address **/
-void LithneClass::setRecipient( XBeeAddress64 _add64 )
+XBeeAddress64 LithneClass::toXBeeAddress( XBeeAddress64 _addr64 )
 {
 	/*	Retrieve the node the user refers to	*/
-	Node * receivingNode	=	getNodeBy64( _add64 );
+	Node * receivingNode	=	getNodeBy64( _addr64 );
 	
 	/*	From this node, get the 16-bit and 64-bit address and
 		write it to the outgoing message	*/
 	if (receivingNode != NULL)
 	{
-		outgoingMessage.setRecipient64( _add64 );
-		outgoingMessage.setRecipient16( receivingNode->getAddress16() );
+		outgoingMessage.toXBeeAddress64( _addr64 );
+		outgoingMessage.toXBeeAddress16( receivingNode->getAddress16() );
 	}
+	else
+	{
+		outgoingMessage.toXBeeAddress64( _addr64 );
+	}
+
+	return outgoingMessage.toXBeeAddress64();
+}
+void LithneClass::setRecipient( XBeeAddress64 _add64 )
+{
+	toXBeeAddress( _add64 );
 }
 /* Deprecated private function to set the recipient using a pointer to a node
 void LithneClass::setRecipient( Node * _receivingNode )
@@ -194,18 +207,29 @@ void LithneClass::setRecipient( Node * _receivingNode )
 }*/
 
 /**	Sets the receipient of the outgoing message using the 16 bit address **/
-void LithneClass::setRecipient16( uint16_t _add16 )
+uint16_t LithneClass::toXBeeAddress( uint16_t _addr16 )
 {	
 /*	Retrieve the node the user refers to	*/
-	Node * receivingNode	=	getNodeBy16( _add16 );
+	Node * receivingNode	=	getNodeBy16( _addr16 );
 	
 	/*	From this node, get the 16-bit and 64-bit address and
 		write it to the outgoing message	*/
 	if (receivingNode != NULL)
 	{
-		outgoingMessage.setRecipient64( receivingNode->getAddress64() );
-		outgoingMessage.setRecipient16( _add16 );
+		outgoingMessage.toXBeeAddress64( receivingNode->getAddress64() );
+		outgoingMessage.toXBeeAddress16( _addr16 );
 	}
+	else
+	{
+		outgoingMessage.toXBeeAddress16( _addr16);
+	}
+
+	return outgoingMessage.toXBeeAddress16();
+}
+
+void LithneClass::setRecipient16( uint16_t _add16 )
+{
+	toXBeeAddress( _add16 );
 }
 
 /** Add an argument to the outgoing message **/
@@ -260,8 +284,8 @@ void LithneClass::println( Node * _node, String _stringArg )
 	
 	if (_node != NULL)
 	{
-		outgoingMessage.setRecipient64( _node->getAddress64() );
-		outgoingMessage.setRecipient16( _node->getAddress16() );
+		outgoingMessage.toXBeeAddress64( _node->getAddress64() );
+		outgoingMessage.toXBeeAddress16( _node->getAddress16() );
 		outgoingMessage.setFunction( F_PRINTLN );
 		outgoingMessage.setScope( NO_SCOPE );
 		outgoingMessage.setStringArgument( _stringArg );
@@ -763,8 +787,33 @@ bool LithneClass::removeScope( String _group )
 	return removeScope( hash(_group) );
 }
 
+/**	Compares two 64-bit XBeeAddress **/
+bool LithneClass::equals( XBeeAddress64 _addr1, XBeeAddress64 _addr2 )
+{
+	bool _equal	=	true;
 
+	if( _addr1.getMsb() != _addr2.getMsb() )
+	{
+		_equal	=	false;
+	}
+	else if( _addr1.getLsb() != _addr2.getLsb() )
+	{
+		_equal	=	false;
+	}
 
+	return _equal;
+}
+
+bool LithneClass::isFromNodeID( uint8_t _id )
+{
+	bool _equal	=	false;
+	Node * curNode = getNodeByID( _id );
+	if( curNode != NULL )
+	{
+		_equal	=	equals(curNode->getAddress64(), incomingMessage.fromXBeeAddress64() );
+	}
+	return _equal;
+}
 
 /*
  ___ _  _ _____ ___ ___ ___ ___ 
