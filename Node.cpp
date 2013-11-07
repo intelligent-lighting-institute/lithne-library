@@ -221,6 +221,7 @@ uint8_t Node::getID()
 /** Returns the latste DB measurement of the node (approximation of ditance) **/
 uint16_t Node::getDB()
 {
+	closeDBRequest();
 	return db[0];
 }
 
